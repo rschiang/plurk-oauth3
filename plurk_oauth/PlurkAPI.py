@@ -6,7 +6,7 @@ class PlurkAPI:
     def __init__(self, key = None, secret = None,
             access_token = None, access_secret = None):
         if not key or not secret:
-            raise ValueError, "Both CONSUMER_KEY and CONSUMER_SECRET need to be specified"
+            raise ValueError("Both CONSUMER_KEY and CONSUMER_SECRET need to be specified")
         self._oauth = PlurkOAuth.PlurkOAuth(key, secret)
         self._authorized = False
         self._error = {'code' : 200, 'reason' : '', 'content': ''}
@@ -19,10 +19,10 @@ class PlurkAPI:
         try: 
             file = open(filename, 'r+')
         except IOError:
-            print "You need to put key/secret in API.keys"
+            print("You need to put key/secret in API.keys")
             raise
         except:
-            print "Unexpected error:", sys.exc_info()[0]
+            print("Unexpected error:", sys.exc_info()[0])
         else:
             data = json.load(file)
             file.close()
@@ -44,6 +44,7 @@ class PlurkAPI:
     def callAPI(self, path, options = None):
         self._error['code'], self._content, self._error['reason'] = self._oauth.request(
                 path, None, options)
+        self._content = self._content.decode('utf-8')
         self._error['content'] = json.loads(self._content)
         if self._error['code'] != '200':
             return None
@@ -77,5 +78,5 @@ class PlurkAPI:
 if __name__ == '__main__':
     import os
     plurk = PlurkAPI(os.environ["CONSUMERKEY"], os.environ["CONSUMERSECRET"])
-#    plurk.authorize('tqRtGMu7Btw9','SCjkkydnkWNA7gwwuZo7y9wshVlzl7Lr')
-    print plurk.callAPI('/APP/Profile/getOwnProfile')
+    plurk.authorize(os.environ['ACCESSTOKEN'], os.environ['ACCESSTOKENSECRET'])
+    print(plurk.callAPI('/APP/Profile/getOwnProfile'))

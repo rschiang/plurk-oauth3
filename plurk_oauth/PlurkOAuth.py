@@ -1,13 +1,14 @@
 import oauth2 as oauth
-import urlparse
-from urllib import urlencode
+import urllib.parse
+from urllib.parse import urlencode
+
 
 class PlurkOAuth:
-    def __init__(self, customer_key = None, customer_secret = None):
+    def __init__(self, customer_key=None, customer_secret=None):
         self.baseURL = 'http://www.plurk.com'
         self.request_token_url = '/OAuth/request_token'
         self.authorization_url = '/OAuth/authorize'
-        self.access_token_url  = '/OAuth/access_token'
+        self.access_token_url = '/OAuth/access_token'
         self.customer_key = customer_key
         self.customer_secret = customer_secret
         self.sign_method = oauth.SignatureMethod_HMAC_SHA1()
@@ -15,7 +16,9 @@ class PlurkOAuth:
         self.token = None
         self.oauth_token = {}
         if self.customer_key and self.customer_secret:
-            self.consumer = oauth.Consumer(self.customer_key, self.customer_secret)
+            self.consumer = oauth.Consumer(
+                self.customer_key,
+                self.customer_secret)
 
     def __unicode__(self):
         return self.baseURL
@@ -57,15 +60,15 @@ class PlurkOAuth:
     def get_consumer_token(self):
 
         # Setup
-        print "Prepare the CONSUMER Info"
+        print("Prepare the CONSUMER Info")
 
         verified = 'n'
         while verified.lower() != 'y':
-            key = raw_input('Input the CONSUMER_KEY: ')
-            secret = raw_input('Input the CONSUMER_SECRET: ')
-            print 'Consumer Key: %s' % str(key)
-            print 'Consumer Secret: %s' % str(secret)
-            verified = raw_input('Are you sure? (y/N) ')
+            key = input('Input the CONSUMER_KEY: ')
+            secret = input('Input the CONSUMER_SECRET: ')
+            print('Consumer Key: %s' % str(key))
+            print('Consumer Secret: %s' % str(secret))
+            verified = input('Are you sure? (y/N) ')
         self.customer_key = key
         self.customer_secret = secret
         self.consumer = oauth.Consumer(self.customer_key, self.customer_secret)
@@ -93,7 +96,7 @@ class PlurkOAuth:
         if str(content[0]) != '200':
             # TODO Declare an exception
             raise Exception(content[2])
-        self.oauth_token = dict(urlparse.parse_qsl(content[1]))
+        self.oauth_token = dict(urllib.parse.parse_qsl(content[1]))
         self._dump(self.oauth_token)
         #print 'Token Key: %s' % str(token['oauth_token'])
         #print 'Token Secret: %s' % str(token['oauth_token_secret'])
@@ -101,14 +104,14 @@ class PlurkOAuth:
     def get_verifier(self):
 
         # Setup
-        print "Open the following URL and authorize it"
-        print "%s?oauth_token=%s" % (self.baseURL + self.authorization_url,
-            self.oauth_token['oauth_token'])
+        print("Open the following URL and authorize it")
+        print("%s?oauth_token=%s" % (self.baseURL + self.authorization_url,
+            self.oauth_token['oauth_token']))
 
         verified = 'n'
         while verified.lower() == 'n':
-            verifier = raw_input('Input the verification number: ')
-            verified = raw_input('Are you sure? (y/n) ')
+            verifier = input('Input the verification number: ')
+            verified = input('Are you sure? (y/n) ')
         return verifier
 
     def get_verifier_url(self):
@@ -128,7 +131,7 @@ class PlurkOAuth:
             # TODO Declare an exception
             raise Exception(content[2])
         # Get Token Key/Secret
-        self.oauth_token = dict(urlparse.parse_qsl(content[1]))
+        self.oauth_token = dict(urllib.parse.parse_qsl(content[1]))
         self._dump(self.oauth_token)
         #print 'Access Key: %s' % str(self.oauth_token['oauth_token'])
         #print 'Access Secret: %s' % str(self.oauth_token['oauth_token_secret'])

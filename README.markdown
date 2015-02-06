@@ -1,7 +1,16 @@
 Plurk-OAuth
 ======
 
-Simple Wrapper of Plurk OAuth API
+Simple Wrapper of Plurk OAuth API which is ported to Python 3.
+
+Depends
+----
+Plurk-OAuth depends on python-oauth2.  After porting to Python 3,
+python2-oauth2 is not compatible with Python 3.  Fortunately @i-kiwamu had
+ported python-oauth2 to python3-oauth2.
+
+Please install python3-oauth2: https://github.com/i-kiwamu/python3-oauth2 .
+Download the zip, then use pip install python3-oauth2.zip to install.
 
 About
 ----
